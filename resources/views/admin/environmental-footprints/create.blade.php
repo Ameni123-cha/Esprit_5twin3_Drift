@@ -1,0 +1,33 @@
+@extends('layouts.backend')
+
+@section('title', 'Ajouter empreinte')
+@section('page-title', 'Ajouter un empreinte')
+
+@section('content')
+    @php($item = $item ?? null)
+    <div class="tv-card max-w-4xl">
+        <form method="POST" action="{{ route('admin.environmental-footprints.store') }}" class="space-y-6">
+            @csrf
+                        <div class="grid gap-4 md:grid-cols-2">
+                <div class="md:col-span-2">
+                    <x-input-label for="product_id" value="Produit" />
+                    <select name="product_id" id="product_id" class="tv-input mt-1" required>
+                        <option value="">Sélectionner…</option>
+                        @foreach($products as $p)
+                            <option value="{{ $p->id }}" @selected(old('product_id', $item?->product_id ?? '') == $p->id)>{{ $p->name }}</option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('product_id')" class="mt-1" />
+                </div>
+                <x-form.field label="Émissions CO₂ (kg)" name="co2_emissions" type="number" step="0.01" :value="old('co2_emissions', $item?->co2_emissions ?? '')" />
+                <x-form.field label="Usage eau (L)" name="water_usage" type="number" step="0.01" :value="old('water_usage', $item?->water_usage ?? '')" />
+                <x-form.field label="Usage terres" name="land_usage" type="number" step="0.01" :value="old('land_usage', $item?->land_usage ?? '')" />
+                <x-form.field label="Score environnemental (0-100)" name="ai_score" type="number" min="0" max="100" :value="old('ai_score', $item?->ai_score ?? '')" />
+            </div>
+            <div class="flex gap-3">
+                <button type="submit" class="tv-btn-primary">Enregistrer</button>
+                <a href="{{ route('admin.environmental-footprints.index') }}" class="tv-btn-secondary">Annuler</a>
+            </div>
+        </form>
+    </div>
+@endsection
